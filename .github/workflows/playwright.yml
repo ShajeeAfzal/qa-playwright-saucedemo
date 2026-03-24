@@ -8,6 +8,9 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
+      REQRES_ENV: prod
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -17,8 +20,11 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
+    - name: Run Playwright API tests
+      if: ${{ env.REQRES_API_KEY != '' }}
+      run: npx playwright test --project=api
+    - name: Run Playwright UI tests
+      run: npx playwright test --project=chromium --project=firefox --project=webkit
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
