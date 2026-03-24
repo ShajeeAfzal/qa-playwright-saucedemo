@@ -1,0 +1,38 @@
+import type { APIRequestContext, APIResponse } from '@playwright/test';
+import { ApiClient } from '../client/ApiClient';
+import type {
+  CreateUserRequest,
+  CreateUserResponse,
+  SingleUserResponse,
+  UpdateUserRequest,
+  UpdateUserResponse,
+} from '../types/user.types';
+
+const DEFAULT_API_BASE_URL = process.env.REQRES_API_BASE_URL ?? 'https://reqres.in/api/';
+
+export class UsersApi {
+  private readonly client: ApiClient;
+
+  constructor(request: APIRequestContext, baseUrl = DEFAULT_API_BASE_URL) {
+    this.client = new ApiClient(request, baseUrl);
+  }
+
+  async createUser(payload: CreateUserRequest): Promise<{ data: CreateUserResponse; response: APIResponse }> {
+    return this.client.post<CreateUserResponse, CreateUserRequest>('users', payload);
+  }
+
+  async getUser(userId: number): Promise<{ data: SingleUserResponse; response: APIResponse }> {
+    return this.client.get<SingleUserResponse>(`users/${userId}`);
+  }
+
+  async updateUser(
+    userId: string | number,
+    payload: UpdateUserRequest,
+  ): Promise<{ data: UpdateUserResponse; response: APIResponse }> {
+    return this.client.put<UpdateUserResponse, UpdateUserRequest>(`users/${userId}`, payload);
+  }
+
+  async deleteUser(userId: string | number): Promise<APIResponse> {
+    return this.client.delete(`users/${userId}`);
+  }
+}

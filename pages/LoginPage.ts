@@ -1,7 +1,13 @@
-const { expect } = require('@playwright/test');
+import { expect, type Locator, type Page } from '@playwright/test';
 
-class LoginPage {
-  constructor(page) {
+export class LoginPage {
+  readonly page: Page;
+  readonly usernameInput: Locator;
+  readonly passwordInput: Locator;
+  readonly loginButton: Locator;
+  readonly errorMessage: Locator;
+
+  constructor(page: Page) {
     this.page = page;
     this.usernameInput = page.locator('#user-name');
     this.passwordInput = page.locator('#password');
@@ -9,19 +15,17 @@ class LoginPage {
     this.errorMessage = page.locator('[data-test="error"]');
   }
 
-  async goto() {
+  async goto(): Promise<void> {
     await this.page.goto('https://www.saucedemo.com/');
   }
 
-  async login(username, password) {
+  async login(username: string, password: string): Promise<void> {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
   }
 
-  async verifyLoginPageLoaded() {
+  async verifyLoginPageLoaded(): Promise<void> {
     await expect(this.loginButton).toBeVisible();
   }
 }
-
-module.exports = { LoginPage };

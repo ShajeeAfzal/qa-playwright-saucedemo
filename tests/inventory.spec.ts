@@ -1,6 +1,6 @@
-const { test } = require('@playwright/test');
-const { LoginPage } = require('../pages/LoginPage');
-const { InventoryPage } = require('../pages/InventoryPage');
+import { test } from '@playwright/test';
+import { InventoryPage } from '../pages/InventoryPage';
+import { LoginPage } from '../pages/LoginPage';
 
 test('user can add backpack to cart from inventory page', async ({ page }) => {
   const loginPage = new LoginPage(page);

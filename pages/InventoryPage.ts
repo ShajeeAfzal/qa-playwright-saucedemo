@@ -1,7 +1,13 @@
-const { expect } = require('@playwright/test');
+import { expect, type Locator, type Page } from '@playwright/test';
 
-class InventoryPage {
-  constructor(page) {
+export class InventoryPage {
+  readonly page: Page;
+  readonly title: Locator;
+  readonly backpackAddToCart: Locator;
+  readonly cartLink: Locator;
+  readonly cartBadge: Locator;
+
+  constructor(page: Page) {
     this.page = page;
     this.title = page.locator('.title');
     this.backpackAddToCart = page.locator('#add-to-cart-sauce-labs-backpack');
@@ -9,21 +15,19 @@ class InventoryPage {
     this.cartBadge = page.locator('.shopping_cart_badge');
   }
 
-  async verifyInventoryLoaded() {
+  async verifyInventoryLoaded(): Promise<void> {
     await expect(this.title).toHaveText('Products');
   }
 
-  async addBackpackToCart() {
+  async addBackpackToCart(): Promise<void> {
     await this.backpackAddToCart.click();
   }
 
-  async openCart() {
+  async openCart(): Promise<void> {
     await this.cartLink.click();
   }
 
-  async verifyCartCount(count) {
+  async verifyCartCount(count: number): Promise<void> {
     await expect(this.cartBadge).toHaveText(String(count));
   }
 }
-
-module.exports = { InventoryPage };

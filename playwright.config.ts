@@ -1,4 +1,3 @@
-// @ts-check
 import { defineConfig, devices } from '@playwright/test';
 
 /**
@@ -13,7 +12,6 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -36,17 +34,32 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'api',
+      testDir: './tests/api',
+      testMatch: '**/*.spec.ts',
+    },
+
+    {
       name: 'chromium',
+      testDir: './tests',
+      testMatch: '**/*.spec.ts',
+      testIgnore: 'api/**/*.spec.ts',
       use: { ...devices['Desktop Chrome'] },
     },
 
     {
       name: 'firefox',
+      testDir: './tests',
+      testMatch: '**/*.spec.ts',
+      testIgnore: 'api/**/*.spec.ts',
       use: { ...devices['Desktop Firefox'] },
     },
 
     {
       name: 'webkit',
+      testDir: './tests',
+      testMatch: '**/*.spec.ts',
+      testIgnore: 'api/**/*.spec.ts',
       use: { ...devices['Desktop Safari'] },
     },
 
@@ -78,4 +91,3 @@ export default defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
 });
-
