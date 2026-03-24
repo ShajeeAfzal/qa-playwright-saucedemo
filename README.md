@@ -11,7 +11,9 @@ It demonstrates Page Object Model design, basic regression coverage, and GitHub-
 
 ## Project Structure
 - `api/` - API client, typed endpoint helpers, and test data builders
+- `fixtures/` - split UI-only and API-enabled Playwright fixtures
 - `pages/` - page object classes
+- `test-data/` - reusable test users and static input data
 - `tests/` - UI test specs
 - `tests/api/` - API CRUD specs
 - `playwright.config.ts` - test runner configuration
@@ -22,6 +24,7 @@ It demonstrates Page Object Model design, basic regression coverage, and GitHub-
 3. Verify selected item appears in cart
 4. CRUD coverage against a public API in `tests/api/users.api.spec.ts`
 5. UI login test seeded with a value returned by the public API
+6. Negative login coverage for invalid, locked, and missing-password scenarios
 
 ## Installation
 ```bash
@@ -78,7 +81,11 @@ This project was created as hands-on QA automation practice to demonstrate:
 - page object model
 - reusable locators and methods
 - TypeScript-based page objects and test specs
+- custom Playwright fixtures for page objects, API clients, and login setup
+- clearer fixture boundaries between pure UI tests and hybrid API+UI tests
+- reusable test data for different user states
 - a separate API test layer with a shared client and typed CRUD helpers
+- API response quality checks such as response-time and timestamp validation
 - using API-returned data inside a UI test
 - UI assertions
 - simple regression flow coverage

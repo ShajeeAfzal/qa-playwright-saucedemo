@@ -15,8 +15,10 @@
   },
   "include": [
     "api/**/*.ts",
+    "fixtures/**/*.ts",
     "playwright.config.ts",
     "pages/**/*.ts",
+    "test-data/**/*.ts",
     "tests/**/*.ts"
   ]
 }

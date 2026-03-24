@@ -1,5 +1,5 @@
 import type { APIRequestContext, APIResponse } from '@playwright/test';
-import { ApiClient } from '../client/ApiClient';
+import { ApiClient, type ApiResult } from '../client/ApiClient';
 import type {
   CreateUserRequest,
   CreateUserResponse,
@@ -17,18 +17,18 @@ export class UsersApi {
     this.client = new ApiClient(request, baseUrl);
   }
 
-  async createUser(payload: CreateUserRequest): Promise<{ data: CreateUserResponse; response: APIResponse }> {
+  async createUser(payload: CreateUserRequest): Promise<ApiResult<CreateUserResponse>> {
     return this.client.post<CreateUserResponse, CreateUserRequest>('users', payload);
   }
 
-  async getUser(userId: number): Promise<{ data: SingleUserResponse; response: APIResponse }> {
+  async getUser(userId: number): Promise<ApiResult<SingleUserResponse>> {
     return this.client.get<SingleUserResponse>(`users/${userId}`);
   }
 
   async updateUser(
     userId: string | number,
     payload: UpdateUserRequest,
-  ): Promise<{ data: UpdateUserResponse; response: APIResponse }> {
+  ): Promise<ApiResult<UpdateUserResponse>> {
     return this.client.put<UpdateUserResponse, UpdateUserRequest>(`users/${userId}`, payload);
   }
 

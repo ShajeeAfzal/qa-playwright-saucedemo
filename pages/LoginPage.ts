@@ -28,4 +28,8 @@ export class LoginPage {
   async verifyLoginPageLoaded(): Promise<void> {
     await expect(this.loginButton).toBeVisible();
   }
+
+  async verifyErrorMessage(message: string): Promise<void> {
+    await expect(this.errorMessage).toHaveText(message);
+  }
 }

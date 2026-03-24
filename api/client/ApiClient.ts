@@ -1,21 +1,33 @@
 import type { APIRequestContext, APIResponse } from '@playwright/test';
 
+export interface ApiResult<T> {
+  data: T;
+  response: APIResponse;
+  durationMs: number;
+}
+
 export class ApiClient {
   constructor(
     private readonly request: APIRequestContext,
     private readonly baseUrl: string,
   ) {}
 
-  async get<T>(path: string): Promise<{ data: T; response: APIResponse }> {
+  async get<T>(path: string): Promise<ApiResult<T>> {
+    const startedAt = Date.now();
     const response = await this.request.get(this.buildUrl(path));
     await this.assertOk(response, 'GET', path);
-    return { data: (await response.json()) as T, response };
+    return {
+      data: (await response.json()) as T,
+      response,
+      durationMs: Date.now() - startedAt,
+    };
   }
 
   async post<TResponse, TRequest>(
     path: string,
     payload: TRequest,
-  ): Promise<{ data: TResponse; response: APIResponse }> {
+  ): Promise<ApiResult<TResponse>> {
+    const startedAt = Date.now();
     const response = await this.request.post(this.buildUrl(path), {
       headers: {
         'Content-Type': 'application/json',
@@ -23,13 +35,18 @@ export class ApiClient {
       data: payload,
     });
     await this.assertOk(response, 'POST', path);
-    return { data: (await response.json()) as TResponse, response };
+    return {
+      data: (await response.json()) as TResponse,
+      response,
+      durationMs: Date.now() - startedAt,
+    };
   }
 
   async put<TResponse, TRequest>(
     path: string,
     payload: TRequest,
-  ): Promise<{ data: TResponse; response: APIResponse }> {
+  ): Promise<ApiResult<TResponse>> {
+    const startedAt = Date.now();
     const response = await this.request.put(this.buildUrl(path), {
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +54,11 @@ export class ApiClient {
       data: payload,
     });
     await this.assertOk(response, 'PUT', path);
-    return { data: (await response.json()) as TResponse, response };
+    return {
+      data: (await response.json()) as TResponse,
+      response,
+      durationMs: Date.now() - startedAt,
+    };
   }
 
   async delete(path: string): Promise<APIResponse> {
