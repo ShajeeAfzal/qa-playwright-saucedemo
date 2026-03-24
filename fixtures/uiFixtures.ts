@@ -1,5 +1,6 @@
 import { test as base } from '@playwright/test';
 import { CartPage } from '../pages/CartPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { LoginPage } from '../pages/LoginPage';
 import { STANDARD_USER } from '../test-data/users';
@@ -8,6 +9,7 @@ type UiFixtures = {
   loginPage: LoginPage;
   inventoryPage: InventoryPage;
   cartPage: CartPage;
+  checkoutPage: CheckoutPage;
   loginAsStandardUser: () => Promise<void>;
 };
 
@@ -22,6 +24,10 @@ export const test = base.extend<UiFixtures>({
 
   cartPage: async ({ page }, use) => {
     await use(new CartPage(page));
+  },
+
+  checkoutPage: async ({ page }, use) => {
+    await use(new CheckoutPage(page));
   },
 
   loginAsStandardUser: async ({ loginPage }, use) => {

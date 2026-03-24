@@ -1,100 +1,209 @@
-# QA Playwright SauceDemo Project
+# QA Playwright SauceDemo Framework
 
-This is a beginner-friendly UI automation project built with Playwright and TypeScript.
-It demonstrates Page Object Model design, basic regression coverage, and GitHub-ready project structure.
+Playwright + TypeScript automation framework covering UI and API testing with reusable fixtures, page objects, typed API helpers, and GitHub Actions execution.
 
-## Tech Stack
-- Playwright
-- TypeScript
-- Node.js
-- VS Code
+This project is designed as a portfolio-style QA automation framework rather than a single demo script. It shows how to structure maintainable test code, separate UI and API concerns, and grow coverage into a realistic regression suite.
 
-## Project Structure
-- `api/` - API client, typed endpoint helpers, and test data builders
-- `fixtures/` - split UI-only and API-enabled Playwright fixtures
-- `pages/` - page object classes
-- `test-data/` - reusable test users and static input data
-- `tests/` - UI test specs
-- `tests/api/` - API CRUD specs
-- `playwright.config.ts` - test runner configuration
+## Snapshot
 
-## Test Scenarios
-1. Valid login with standard user
-2. Add item to cart from inventory page
-3. Verify selected item appears in cart
-4. CRUD coverage against a public API in `tests/api/users.api.spec.ts`
-5. UI login test seeded with a value returned by the public API
-6. Negative login coverage for invalid, locked, and missing-password scenarios
+| Area | What this project demonstrates |
+| --- | --- |
+| UI Automation | Login, inventory, cart, checkout, logout |
+| API Automation | Typed CRUD coverage against ReqRes |
+| Framework Design | POM, custom fixtures, reusable test data |
+| Validation | Response contracts, timestamps, response-time checks |
+| Configurability | `.env` support, `BASE_URL`, API key handling |
+| Execution | Chromium, Firefox, WebKit, API-only project |
+| CI/CD | GitHub Actions workflow with report artifact upload |
+| Debugging | HTML reports, traces, screenshots, video on failure |
 
-## Installation
-```bash
-npm install
-npx playwright install
+## Capabilities
+
+### UI Coverage
+- successful login
+- negative login validation
+- add item to cart
+- verify item in cart
+- remove item from cart
+- complete checkout flow
+- checkout form validation
+- logout flow
+
+### API Coverage
+- create user
+- read user
+- update user
+- delete user
+- validate response contracts
+- validate response time
+- validate timestamp format
+- validate negative behavior for unknown users
+- validate missing API key behavior
+
+### Framework Features
+- Playwright Page Object Model
+- custom UI and API fixtures
+- hybrid API + UI test capability
+- typed API client and endpoint layer
+- reusable test data and payload builders
+- cross-browser execution
+- CI-ready project structure
+
+## Architecture
+
+```text
+qa-playwright-saucedemo/
+|
+|-- api/
+|   |-- client/        # shared API client and ReqRes request context
+|   |-- endpoints/     # endpoint-specific helpers
+|   |-- data/          # payload builders / factories
+|   |-- types/         # response and request types
+|   |-- utils/         # reusable API assertions
+|
+|-- fixtures/          # Playwright fixture composition for UI and API tests
+|-- pages/             # page objects for SauceDemo screens
+|-- test-data/         # reusable users and static input values
+|-- tests/
+|   |-- api/           # API specs
+|   |-- *.spec.ts      # UI and hybrid specs
+|
+|-- playwright.config.ts
+|-- .github/workflows/playwright.yml
 ```
 
-## Environment Variables
-Create a local `.env` or set shell variables before running API-backed tests:
+## Test Design Highlights
+
+### UI Layer
+- page objects keep selectors and workflows out of spec files
+- shared fixtures inject page objects and reusable login helpers
+- tests use `test.step()` where it improves reporting readability
+
+### API Layer
+- `ApiClient` centralizes request logic and timing capture
+- `UsersApi` exposes typed endpoint methods
+- assertion helpers make contract checks reusable and readable
+
+### Hybrid Testing
+- the framework supports API-backed UI scenarios
+- one login test seeds data through the API layer before validating the UI flow
+
+## Project Flow
+
+```text
+Config (.env / Playwright config)
+        |
+        v
+Fixtures (UI / API)
+        |
+        v
+Page Objects + API Clients
+        |
+        v
+Test Specs
+        |
+        v
+Reports / Traces / CI Artifacts
+```
+
+## Playwright Projects
+
+| Project | Purpose |
+| --- | --- |
+| `api` | runs API specs in `tests/api/` |
+| `chromium` | runs UI specs in Chrome |
+| `firefox` | runs UI specs in Firefox |
+| `webkit` | runs UI specs in Safari/WebKit |
+
+## Configuration
+
+Create a local `.env` file or set environment variables in your shell.
 
 ```bash
+BASE_URL=https://www.saucedemo.com/
 REQRES_API_KEY=your-reqres-api-key
 REQRES_ENV=prod
 ```
 
 PowerShell example:
+
 ```powershell
+$env:BASE_URL="https://www.saucedemo.com/"
 $env:REQRES_API_KEY="your-reqres-api-key"
 $env:REQRES_ENV="prod"
 ```
 
-## Run Tests
+### Config Notes
+- `BASE_URL` controls the SauceDemo UI target
+- `REQRES_API_KEY` is required for API-backed tests
+- `REQRES_ENV` defaults to `prod` if not provided
+
+## Run The Suite
+
+### Install
+
 ```bash
-npx playwright test
+npm install
+npx playwright install
 ```
 
-Or run:
+### Run Everything
+
 ```bash
 npm test
 ```
 
-## Run API Tests Only
+### Run By Scope
+
 ```bash
-npx playwright test --project=api
+npm run test:api
+npm run test:chromium
+npm run test:firefox
+npm run test:webkit
+npm run test:headed
 ```
 
-## Run UI Tests Only
+### Type Check
+
 ```bash
-npx playwright test --project=chromium
+npm run typecheck
 ```
 
-## Run in Headed Mode
+### Open Report
+
 ```bash
-npx playwright test --headed
+npm run test:report
 ```
 
-## Open Report
-```bash
-npx playwright show-report
-```
+## CI Workflow
+
+The GitHub Actions workflow:
+- installs dependencies
+- installs Playwright browsers
+- runs API tests when `REQRES_API_KEY` is available
+- runs UI tests across Chromium, Firefox, and WebKit
+- uploads the Playwright HTML report as a build artifact
+
+## Why This Project Is Useful For QA Roles
+
+This repo shows more than test writing. It demonstrates how a QA automation engineer can:
+- design a maintainable automation framework
+- separate concerns between UI and API layers
+- build reusable fixtures and helpers
+- validate more than status codes through contract and quality checks
+- support CI execution and failure debugging
+- scale a project beyond a single happy-path flow
+
+## Current Tooling
+
+- Playwright
+- TypeScript
+- Node.js
+- GitHub Actions
 
 ## Notes
-This project was created as hands-on QA automation practice to demonstrate:
-- page object model
-- reusable locators and methods
-- TypeScript-based page objects and test specs
-- custom Playwright fixtures for page objects, API clients, and login setup
-- clearer fixture boundaries between pure UI tests and hybrid API+UI tests
-- reusable test data for different user states
-- a separate API test layer with a shared client and typed CRUD helpers
-- API response quality checks such as response-time and timestamp validation
-- using API-returned data inside a UI test
-- UI assertions
-- simple regression flow coverage
 
-Public API choice:
-- `https://reqres.in/api/`
-- It is useful for CRUD-style automation examples, but create/update/delete responses are mock-style rather than fully persistent.
-- Current ReqRes requests may require an `x-api-key`; this project reads that from `REQRES_API_KEY`.
-
-Playwright projects:
-- `api` runs the API-only specs from `tests/api/`
-- `chromium`, `firefox`, and `webkit` run the UI specs from `tests/`
+- SauceDemo is used for UI automation practice
+- ReqRes is used for API automation examples
+- ReqRes create/update/delete endpoints are mock-style examples and not fully persistent
+- current ReqRes `/api/*` access may require `x-api-key`

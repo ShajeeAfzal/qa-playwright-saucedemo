@@ -16,27 +16,32 @@ test('valid user can log in successfully', async ({ page, loginPage, inventoryPa
     .toContain('ui-seed-user-');
 });
 
-test('shows an error for invalid credentials', async ({ loginPage }) => {
-  await loginPage.goto();
-  await loginPage.login(INVALID_USER.username, INVALID_USER.password);
+const loginErrorScenarios = [
+  {
+    name: 'shows an error for invalid credentials',
+    username: INVALID_USER.username,
+    password: INVALID_USER.password,
+    expectedMessage: 'Epic sadface: Username and password do not match any user in this service',
+  },
+  {
+    name: 'shows a locked out message for locked user',
+    username: LOCKED_OUT_USER.username,
+    password: LOCKED_OUT_USER.password,
+    expectedMessage: 'Epic sadface: Sorry, this user has been locked out.',
+  },
+  {
+    name: 'shows a validation error for missing password',
+    username: STANDARD_USER.username,
+    password: '',
+    expectedMessage: 'Epic sadface: Password is required',
+  },
+];
 
-  await loginPage.verifyErrorMessage(
-    'Epic sadface: Username and password do not match any user in this service',
-  );
-});
+for (const scenario of loginErrorScenarios) {
+  test(scenario.name, async ({ loginPage }) => {
+    await loginPage.goto();
+    await loginPage.login(scenario.username, scenario.password);
 
-test('shows a locked out message for locked user', async ({ loginPage }) => {
-  await loginPage.goto();
-  await loginPage.login(LOCKED_OUT_USER.username, LOCKED_OUT_USER.password);
-
-  await loginPage.verifyErrorMessage(
-    'Epic sadface: Sorry, this user has been locked out.',
-  );
-});
-
-test('shows a validation error for missing password', async ({ loginPage }) => {
-  await loginPage.goto();
-  await loginPage.login(STANDARD_USER.username, '');
-
-  await loginPage.verifyErrorMessage('Epic sadface: Password is required');
-});
+    await loginPage.verifyErrorMessage(scenario.expectedMessage);
+  });
+}

@@ -14,7 +14,7 @@ export class ApiClient {
 
   async get<T>(path: string): Promise<ApiResult<T>> {
     const startedAt = Date.now();
-    const response = await this.request.get(this.buildUrl(path));
+    const response = await this.getRaw(path);
     await this.assertOk(response, 'GET', path);
     return {
       data: (await response.json()) as T,
@@ -68,6 +68,10 @@ export class ApiClient {
       throw new Error(`DELETE ${path} failed with ${response.status()}: ${body}`);
     }
     return response;
+  }
+
+  async getRaw(path: string): Promise<APIResponse> {
+    return this.request.get(this.buildUrl(path));
   }
 
   private buildUrl(path: string): string {

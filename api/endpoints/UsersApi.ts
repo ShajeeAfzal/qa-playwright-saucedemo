@@ -25,6 +25,10 @@ export class UsersApi {
     return this.client.get<SingleUserResponse>(`users/${userId}`);
   }
 
+  async getUserResponse(userId: string | number): Promise<APIResponse> {
+    return this.client.getRaw(`users/${userId}`);
+  }
+
   async updateUser(
     userId: string | number,
     payload: UpdateUserRequest,
